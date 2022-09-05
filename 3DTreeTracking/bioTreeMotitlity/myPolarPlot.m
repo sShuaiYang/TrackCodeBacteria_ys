@@ -1,0 +1,16 @@
+function myPolarPlot(theta,dataList,threshold)
+figure1=figure;
+myColor=[1,0,0;0,1,0;0,0,1];
+for iData=1:size(dataList,2)
+    x=dataList(:,iData).*cos(theta);
+    y=dataList(:,iData).*sin(theta);
+     plot(x,y, ...
+                'Marker','.','MarkerSize',6,'Color',myColor(iData,:),'LineStyle','-');hold on 
+end
+text1=strcat('P1 Velocity Orientation  threshold=', num2str(threshold));
+annotation(figure1,'textbox',...
+    [0.409387755102042 0.780519185591229 0.172514619883041 0.0438527799530149],...
+    'String',{text1},...
+    'FontSize',24,...
+    'LineStyle','none');
+end

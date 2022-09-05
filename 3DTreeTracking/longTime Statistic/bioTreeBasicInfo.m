@@ -1,0 +1,200 @@
+function bioTree=bioTreeBasicInfo(bioTree,bacteriaFrameInfo,timeInterval,scaleInfo,dirFile)
+% aveLen,aveGenerationTime,bacteriaNum vs time
+
+% aveLen
+length=[];
+for i=1:numel(bacteriaFrameInfo)
+    length=[length;bacteriaFrameInfo{i}.lengthInfo];
+end
+bioTree{1}.aveLength=mean(length)*scaleInfo;
+clear length
+
+% aveGenerationTime
+gTime=[];
+for iframe=1:size(bioTree,2)
+    for iNode=1:size(bioTree{iframe}.node,2)
+        if size(bioTree{iframe}.node{iNode}.In,2)==1 && size(bioTree{iframe}.node{iNode}.Out,2)==2
+            preIsNode=bioTree{iframe}.node{iNode}.In{1}.isNode;
+            if preIsNode==1
+                preNode=bioTree{iframe}.node{iNode}.In{1}.nodeInfo;
+                if size(bioTree{preNode(1)}.node{preNode(2)}.In,2)==1 && size(bioTree{preNode(1)}.node{preNode(2)}.Out,2)==2
+                    retTime=iframe-preNode(1);
+                    if retTime*timeInterval/60>=40
+                        gTime=[gTime;retTime*timeInterval/60];
+                    end
+                end
+            end
+        end
+    end
+end
+bioTree{1}.aveGenerationTime=mean(gTime);
+% fit to normal distribution--normfit is to original data,not distribution
+
+% bacteriaNum
+bacteriaNum=[];
+for i=1:numel(bacteriaFrameInfo)
+   bacteriaNum(i)=size(bacteriaFrameInfo{i}.lengthInfo,1);
+end
+time=(1:numel(bacteriaFrameInfo))*timeInterval/60;
+
+% attachingCase
+limitRegionIdx=getLimitRegion(bioTree{1}.imageProcessingInfo.cropInfo);
+attachingNum=0;
+for iframe=2:size(bioTree,2)
+    for iRoot=1:size(bioTree{iframe}.root,2)
+        pixelIdxList=bioTree{iframe}.root{iRoot}.rootPixelDetail;
+        if ~any(ismember(pixelIdxList,limitRegionIdx))
+            attachingNum=attachingNum+1;
+        end
+    end
+end
+attachingRatio=attachingNum/(size(bioTree,2)*3/60);
+
+% detachingCase
+limitRegionIdx=getLimitRegion(bioTree{1}.imageProcessingInfo.cropInfo);
+detachingNum=0;
+for iframe=1:size(bioTree,2)-1
+    for iLeaf=1:size(bioTree{iframe}.leavies,2)
+        pixelIdxList=bioTree{iframe}.leavies{iLeaf}.leaviesPixelDetail;
+        if ~any(ismember(pixelIdxList,limitRegionIdx))
+            detachingNum=detachingNum+1;
+        end
+    end
+end
+detachingRatio=detachingNum/(size(bioTree,2)*3/60);
+
+% velocityInfo
+velocityInfo=[];
+for iframe=1:size(bioTree,2)
+    for iNode=1:size(bioTree{iframe}.node,2)
+        if size(bioTree{iframe}.node{iNode}.In,2)==1 && size(bioTree{iframe}.node{iNode}.Out,2)==2
+            preIsNode=bioTree{iframe}.node{iNode}.In{1}.isNode;
+            if preIsNode==1
+                preNode=bioTree{iframe}.node{iNode}.In{1}.nodeInfo;
+                if size(bioTree{preNode(1)}.node{preNode(2)}.In,2)==1 && size(bioTree{preNode(1)}.node{preNode(2)}.Out,2)==2
+                    prePosition=bioTree{preNode(1)}.node{preNode(2)}.Out{preNode(3)}.traceInfo.measurment{1}.Centroid;
+                    endPosition=bioTree{preNode(1)}.node{preNode(2)}.Out{preNode(3)}.traceInfo.measurment{end}.Centroid;
+                    timeDiff=(iframe-(preNode(1))-1)*timeInterval;
+                    diffDis=pdist2(prePosition,endPosition)*scaleInfo;
+                    velocityInfo=[velocityInfo;timeDiff,diffDis];
+                end
+            end
+        end
+    end
+end
+% meanVelocity=sum(velocityInfo(:,2))/sum(velocityInfo(:,1));
+meanVelocity=[0,0];
+
+% get 3 pictures
+dirTiff=strcat(dirFile,'\tiff2matlab');
+nameList=dir(dirTiff);
+listNum=numel(nameList)-2;
+k=0;
+for i=[1,ceil(listNum/2),listNum]
+    k=k+1;
+    load(strcat(dirTiff,'\',nameList(i+2).name));
+    if k==1
+        stackNum=size(imageStack,3);
+    end
+    image(:,:,k)=imageStack(:,:,1);
+    clear imageStack
+end
+timeInfo=(([1,ceil(listNum/2),listNum]-1)*stackNum+1)*timeInterval/3600;
+
+createFigure1(time,bacteriaNum,bioTree{1}.aveLength,bioTree{1}.aveGenerationTime,attachingRatio,detachingRatio,meanVelocity,image,timeInfo);
+
+saveas(gcf,strcat(dirFile,'\longTimeResult\basicInfoMap.fig'))
+close all
+end
+function limitRegionIdx=getLimitRegion(cropInfo)
+cropInfo1=bwmorph(cropInfo,'remove');
+cropInfo1=imdilate(cropInfo1,true(13));
+limitRegion=cropInfo1 & cropInfo;
+cc=bwconncomp(limitRegion);
+limitRegionIdx=cc.PixelIdxList{1,1};
+end
+% function resultImage=easyHist(originalData,plotColor)
+% resultImage=oneDimGaussian(originalData,0.5,1);
+% hold on;plot(resultImage(:,1),resultImage(:,2),'Color',plotColor)
+% end
+% function resultImage=oneDimGaussian(degreeResult,interval,sigma)
+% xMin=0;
+% xMax=max(degreeResult);
+% rowPos=xMin:interval:xMax;
+% rowPos=rowPos';
+% resultImage=zeros(numel(rowPos),2);
+% for i=1:numel(degreeResult)
+%     rowGauss=1/(2*pi)^0.5/sigma*exp(-(rowPos-degreeResult(i)).^2/2/sigma^2);
+%     resultImage(:,2)=resultImage(:,2)+rowGauss;
+% end
+% resultImage(:,1)=rowPos;
+% sumAll=sum(resultImage(:,2)*interval);
+% resultImage(:,2)=resultImage(:,2)/sumAll;
+% end
+function createFigure1(time,bacNum,aveLen,gTime,aRatio,dRatio,meanVelocity,image,timeInfo)
+%CREATEFIGURE(X1,Y1)
+%  X1:  vector of x data
+%  Y1:  vector of y data
+%  Auto-generated by MATLAB on 28-Jun-2013 11:12:26
+% Create figure
+figure1 = figure;
+
+% Create axes
+axes1 = axes('Parent',figure1,...
+    'Position',[0.178125 0.0228509249183896 0.26305124506383 0.459194776931447]);
+box(axes1,'on');
+hold(axes1,'all');
+
+% Create plot
+plot(time,bacNum);
+
+% Create title
+title('bacteriaNum on surface vs Time','FontSize',20);
+
+% Create xlabel
+xlabel('time/min','FontSize',20);
+
+% Create ylabel
+ylabel('bacteriaNum','FontSize',20);
+
+% Create textbox
+annotation(figure1,'textbox',...
+    [0.195184981684982 0.304751549995884 0.166794184981685 0.139320618476624],...
+    'String',{strcat('aveLen=',num2str(aveLen),'¦Ìm'),strcat('aveGenerationTime=',num2str(gTime),'min'),strcat('attachingRate=',num2str(aRatio),'/min'),strcat('detachingRate=',num2str(dRatio),'/min'),strcat('meanVelocity=',num2str(meanVelocity),'¦Ìm/s')},...
+    'FontSize',16,...
+    'FitBoxToText','off',...
+    'LineStyle','none');
+
+% figure 2
+axes2 = axes('Parent',figure1,...
+    'Position',[0.180208333333333 0.532069640914037 0.243229166666667 0.438520130576715]);
+box(axes2,'on');
+imshow(image(:,:,1))
+title('0 h','FontSize',20);
+
+% figure 3
+axes3 = axes('Parent',figure1,...
+    'Position',[0.494791666666666 0.532069640914037 0.239583333333334 0.439608269858543]);
+box(axes3,'on');
+imshow(image(:,:,2))
+title(strcat(num2str(timeInfo(2),3),'h'),'FontSize',20);
+
+% figure 4
+axes4 = axes('Parent',figure1,...
+    'Position',[0.495312499999999 0.0337323177366703 0.237500000000001 0.4417845484222]);
+box(axes4,'on');
+imshow(image(:,:,3))
+title(strcat(num2str(timeInfo(3),3),'h'),'FontSize',20);
+end
+function [msd,tao]=getMSD(position,timeDelay,frameFrequency)
+tao=[1,2,3,4,5,6,7,8,9,fix(timeDelay(timeDelay>=10))];
+msd=[];
+for iTao=1:size(tao,2)
+    pos_pre=position(1:end-tao(iTao),:);
+    pos_next=position(1+tao(iTao):end,:);
+    dataTemp=(pos_next-pos_pre).^2;
+    msd=[msd,mean(dataTemp(:,1)+dataTemp(:,2))];
+end
+% change tao unit to second
+tao = tao./frameFrequency;
+end

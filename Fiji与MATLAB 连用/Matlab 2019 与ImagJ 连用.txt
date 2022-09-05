@@ -1,0 +1,16 @@
+下载jar插件mij.jar 与ij.jar，
+参考：https://ww2.mathworks.cn/matlabcentral/fileexchange/47545-mij-running-imagej-and-fiji-within-matlab
+
+将其置于安装位置的文件夹下：C:\Program Files\Polyspace\R2019b\java\jar
+Fiji 更新加入 Help-update-manage update sites-勾选ImageJ-MATLAB
+
+提高JAVA 内存，根据自己电脑内存设置java.opts 文件，现有的我设置的是16g。
+java.opts文件置于安装位置文件下：C:\Program Files\Polyspace\R2019b\bin\win64
+参考：https://ww2.mathworks.cn/matlabcentral/answers/92813-how-do-i-increase-the-heap-space-for-the-java-vm-in-matlab-6-0-r12-and-later-versions
+
+MATLAB 添加快捷方式：
+
+javaaddpath 'C:\Program Files\Polyspace\R2019b\java\jar\mij.jar'
+javaaddpath 'C:\Program Files\Polyspace\R2019b\java\jar\ij.jar'
+addpath('E:\ys\fiji-win64\Fiji.app\scripts');
+Miji;

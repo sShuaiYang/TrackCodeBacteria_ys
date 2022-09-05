@@ -1,0 +1,37 @@
+dirAll = 'G:\2022-05-24 HYJ'
+sampleList = dir([dirAll,filesep,'J*']);
+fname = 'allbasicHist';
+
+f1 = figure('Name',fname);
+
+
+
+for iSamp = 1:numel(sampList)/2
+    subplot1 = subplot(4,2,iSamp,'Parent',f1);
+    load([dirAll,filesep,sampList((iSamp-1)*2+1).name,filesep,'result_basic/dataCollect.mat']);
+    TF = dataCollect.intsfGFP>5;
+    intsfGFP = dataCollect.intsfGFP(TF);
+    meanValue = mean(intsfGFP);
+    stdValue = std(intsfGFP);
+    dataName = strcat(sampList((iSamp-1)*2+1).name,'-sfGFP',32, num2str(meanValue,'%.0f'),'±',num2str(stdValue,'%.0f'));
+    histogram(intsfGFP,'DisplayName',dataName,'EdgeColor','none')；
+
+    hold(subplot1,'on')
+
+    load([dirAll,filesep,sampList(iSamp*2).name,filesep,'result_basic/dataCollect.mat']);
+    TF = dataCollect.intsfGFP>5;
+    intsfGFP = dataCollect.intsfGFP(TF);
+    meanValue = mean(intsfGFP);
+    stdValue = std(intsfGFP);
+    dataName = strcat(sampList(iSamp*2).name,'-sfGFP',32, num2str(meanValue,'%.0f'),'±',num2str(stdValue,'%.0f'));
+    histogram(intsfGFP,'DisplayName',dataName,'EdgeColor','none')；
+
+    set(subplot1,'FontSize',12);
+    box(subplot1,'off');
+    legend(subplot1,'show');
+    hold(subplot1,'off')
+    xlabel({'intensity (a.u.)'});
+    ylabel({'cell Num (a.u.)'});
+
+
+end

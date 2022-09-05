@@ -1,0 +1,38 @@
+abu_D = data.Abundances_Grouped__Dark;
+abu_L = data.Abundances_Grouped__Light;
+ratio_LD = data.AbundanceRatio_log2___Light___Dark_;
+p_adj = data.AbundanceRatioAdj_P_Value__Light___Dark_;
+c(:,1) = abu_L(p_adj<=0.05)
+c(:,2) = abu_D(p_adj<=0.05);
+temp =~isnan(c(:,1))&~isnan(c(:,2));
+c = c(temp,:);
+heatmap(c);
+heatmap(log10(c));
+c1 = log10(c);
+heatmap(log10(c));
+colormap(jet(150))
+brewermap_view
+[map,num,typ] = brewermap(120,'RdYlBu');
+colormap(map)
+brewermap_view
+colormap(flip(map,1))
+figure,heatmap(c);
+colormap(flip(map,1))
+figure, scatter(a(isnan(TF_regluate)),-log10(b(isnan(TF_regluate))),20,[0,0.45,0.74],'MarkerFaceAlpha',0.6)
+figure, heatmap(log10(c))
+colormap(flip(map,1))
+name = data.GeneSymbol;
+geneName = data.GeneSymbol;
+geneName_bigCh = geneName(p_adj<=0.05);
+geneName_bigCh = geneName_bigCh(temp);
+find(strcmp(geneName_bigCh , 'hcnA'))
+find(strcmp(geneName_bigCh , 'hcnB'))
+hold on, scatter(a(TF_proClass==2),-log10(b(TF_proClass==2)),50,cmap(2,:),'filled','MarkerFaceAlpha',1)
+hold on, scatter(a(TF_proClass==5),-log10(b(TF_proClass==5)),50,cmap(3,:),'filled','MarkerFaceAlpha',1)
+hold on, line([-4,4],[log10(0.05),log10(0.05)])
+hold on, line([-4,4],[-log10(0.05),-log10(0.05)])
+figure, scatter(a(isnan(TF_regluate)),-log10(b(isnan(TF_regluate))),20,[0,0.45,0.74],'MarkerFaceAlpha',0.6)
+figure,scatter(a,-log10(b),20,[0,0.45,0.74])
+hold on, scatter(a(TF_proClass==2),-log10(b(TF_proClass==2)),50,cmap(2,:),'filled','MarkerFaceAlpha',1)
+hold on, scatter(a(TF_proClass==5),-log10(b(TF_proClass==5)),50,cmap(3,:),'filled','MarkerFaceAlpha',1)
+hold on, line([-4,4],[-log10(0.05),-log10(0.05)])

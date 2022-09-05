@@ -1,0 +1,36 @@
+a= data.AbundanceRatioAdj_P_Value__Light___Dark_;
+b = data.AbundanceRatio_log2___Light___Dark_;
+TF_regluate = data.RegulaitonLabel;
+TF_proClass = data.ProteinClass;
+
+cmap = colormap(lines(10));
+figure, scatter(a(isnan(TF_regluate)),-log10(b(isnan(TF_regluate))),20,[0,0.45,0.74],'filled','MarkerFaceAlpha',0.6)
+hold on, scatter(a(TF_regluate==1),-log10(b(TF_regluate==1)),20,cmap(2,:),'filled','MarkerFaceAlpha',0.6)
+hold on, scatter(a(TF_regluate==2),-log10(b(TF_regluate==2)),20,cmap(3,:),'filled','MarkerFaceAlpha',0.6)
+hold on, line([-8,8],[2,2])
+temp=-log10(a)>=2;
+sum(temp)
+temp=-log10(b)>=2;
+sum(temp)
+temp=~isnan(a);
+sum(temp)
+figure,scatterhist(a(TF_regluate==1),-log10(b(TF_regluate==1)),'Kernel','on')
+figure,scatterhist(a(TF_regluate==2),-log10(b(TF_regluate==2)),'Kernel','on')
+uiopen('F:\cxy20200708proteome profiling\down-regulate-scatterhist.fig',1)
+uiopen('F:\cxy20200708proteome profiling\Up-regulate-scatterhist.fig',1)
+figure, scatter(a(isnan(TF_proClass)),-log10(b(isnan(TF_proClass))),20,[0,0.45,0.74],'filled','MarkerFaceAlpha',0.6)
+hold on, scatter(a(TF_proClass==1),-log10(b(TF_proClass==1)),20,cmap(2,:),'filled','MarkerFaceAlpha',0.6)
+figure, scatter(a(isnan(TF_proClass)),-log10(b(isnan(TF_proClass))),20,[0,0.45,0.74],'filled','MarkerFaceAlpha',0.6)
+hold on, scatter(a(TF_proClass==1),-log10(b(TF_proClass==1)),20,cmap(2,:),'filled','MarkerFaceAlpha',0.6)
+figure, scatter(a(isnan(TF_proClass)),-log10(b(isnan(TF_proClass))),20,[0,0.45,0.74],'filled','MarkerFaceAlpha',0.6)
+hold on, scatter(a(TF_proClass==2),-log10(b(TF_proClass==2)),20,cmap(2,:),'filled','MarkerFaceAlpha',0.6)
+figure, scatter(a(isnan(TF_proClass)),-log10(b(isnan(TF_proClass))),20,[0,0.45,0.74],'filled','MarkerFaceAlpha',0.6)
+hold on, scatter(a(TF_proClass==5),-log10(b(TF_proClass==5)),20,cmap(2,:),'filled','MarkerFaceAlpha',0.6)
+figure, scatter(a(isnan(TF_proClass)),-log10(b(isnan(TF_proClass))),20,[0,0.45,0.74],'filled','MarkerFaceAlpha',0.6)
+hold on, scatter(a(TF_proClass==8),-log10(b(TF_proClass==8)),20,cmap(2,:),'filled','MarkerFaceAlpha',0.6)
+figure, scatter(a(isnan(TF_proClass)),-log10(b(isnan(TF_proClass))),20,[0,0.45,0.74],'filled','MarkerFaceAlpha',0.6)
+hold on, scatter(a(TF_proClass==7),-log10(b(TF_proClass==7)),20,cmap(2,:),'filled','MarkerFaceAlpha',0.6)
+figure, scatter(a(isnan(TF_proClass)),-log10(b(isnan(TF_proClass))),20,[0,0.45,0.74],'filled','MarkerFaceAlpha',0.6)
+hold on, scatter(a(TF_proClass==4),-log10(b(TF_proClass==4)),50,cmap(2,:),'filled','MarkerFaceAlpha',1)
+figure, scatter(a(isnan(TF_proClass)),-log10(b(isnan(TF_proClass))),20,[0,0.45,0.74],'filled','MarkerFaceAlpha',0.6)
+hold on, scatter(a(TF_proClass==3),-log10(b(TF_proClass==3)),50,cmap(2,:),'filled','MarkerFaceAlpha',1)

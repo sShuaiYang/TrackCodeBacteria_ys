@@ -1,1 +1,0 @@
-https://www.mathworks.com/matlabcentral/fileexchange/68239-pycolormap4matlab

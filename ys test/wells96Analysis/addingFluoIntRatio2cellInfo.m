@@ -1,12 +1,12 @@
-function cellInfo_struct = addingFluoIntRatio2cellInfo(dirAll,cellInfo_struct,Ch1,Ch2,dataFolder)
+function cellInfo_struct = addingFluoIntRatio2cellInfo(dirAll,cellInfo_struct,Ch2,Ch1,dataFolder)
 % Shuai Yang 2021.09.09
 % add intenstiy ratio to 96 wells cellInfo
-% Exampel：Ch1 = 'sfGFP';Ch2 = 'mScarletI' ;
+% Exampel：Ch2 = 'sfGFP';Ch1 = 'mScarletI' ; default ch1 为 baseCh
 % intRatio 结构是 单个细菌的平均值；方差；
 for iSamp = 1:numel(cellInfo_struct)
     
     % case for empty samples
-    if isempty(cellInfo_struct(iSamp).(['int',Ch1]) )
+    if isempty(cellInfo_struct(iSamp).(['int',Ch2]) )
         continue
     end
     
@@ -26,13 +26,13 @@ for iSamp = 1:numel(cellInfo_struct)
     intRatio = NaN(numel(allDataCollect),2);
     for iTime = 1:numel(allDataCollect)
         try
-            intCh1 = allDataCollect{iTime}.(['int',Ch1]);
-            intCh2 = allDataCollect{iTime}.(['int',Ch2]);
+            intCh1 = allDataCollect{iTime}.(['int',Ch2]);
+            intCh2 = allDataCollect{iTime}.(['int',Ch1]);
             intRatio(iTime,1) = mean(intCh1./intCh2,'omitnan');
             intRatio(iTime,2) = std(intCh1./intCh2,'omitnan');
         catch
             msg = ['No cell was dectected in frame ',num2str(iTime),';',...
-                ' Specify the ',Ch1,Ch2,'Ratio',' value as NaN.'];
+                ' Specify the ',Ch2,Ch1,'Ratio',' value as NaN.'];
             warning(msg);
             disp(msg);
             intRatio(iTime,1) = NaN;
@@ -40,7 +40,7 @@ for iSamp = 1:numel(cellInfo_struct)
         end
     end
     
-    cellInfo_struct(iSamp).([Ch1,Ch2,'Ratio']) = intRatio;
+    cellInfo_struct(iSamp).([Ch2,Ch1,'Ratio']) = intRatio;
 end
 
 end

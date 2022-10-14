@@ -123,7 +123,7 @@ subplot2 = subplot(2,1,2,'Parent',f1);
 meanValue = mean(dataCollect.MajorAxisLength)*scale;
 stdValue = std(dataCollect.MajorAxisLength)*scale;
 dataName = strcat('cellLength',32, num2str(meanValue,'%.1f'),'±',num2str(stdValue,'%.1f'),'um');
-histogram(dataCollect.(fields{end})*scale,'DisplayName',dataName,'FaceColor','k','EdgeColor','none')
+histogram(dataCollect.MajorAxisLength*scale,'DisplayName',dataName,'FaceColor','k','EdgeColor','none')
 
 hold(subplot2,'on')
 meanValue = mean(dataCollect.MinorAxisLength)*scale;

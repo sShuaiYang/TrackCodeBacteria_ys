@@ -24,6 +24,9 @@ bioInfo = struct('fieldIdx',[],'frameIdx',[],'intsfGFP',[], ...
 % fieldList = fieldListClean (fieldList);%只保留field的文件和两个系统文件
 % dirFieldOne = strcat(dirFile,'\','field0001');
 fieldList = dir([dirFile,filesep,'field*']);
+if isempty(fieldList) % case for no data 
+    return
+end
 dirFieldOne = strcat(dirFile,'\',fieldList(1).name);%case for field0001 被人为删除
 % 取第一个视野判断是否存在Tracking 文件夹
 if isfolder([dirFieldOne,'\Tracking'])

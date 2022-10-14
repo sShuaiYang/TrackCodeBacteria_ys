@@ -5,9 +5,9 @@ function [dataCollect] = oneShotMontageFluoImageProtocal(dirFile,fixedChannel)
 % %1.荧光图像视场不均匀校正
 % fluoImageViewNonuniformCorrection(dirFile);
 %2.相机的校正信息的获得以及新图像的生成
-cameraCorrectionForMultiFluoChannels(dirFile,fixedChannel);
+% cameraCorrectionForMultiFluoChannels(dirFile,fixedChannel);
 %3.如果需要自定义阈值 请在[]中填入数值即可 如 [5]
-oneShotBatchImageMaskGet_ys(dirFile,fixedChannel);
+% oneShotBatchImageMaskGet_ys(dirFile,fixedChannel);
 %4.获得bioInfo信息
 [bioInfo] = oneShotMontageFluoImageBioInfoGet(dirFile);
 % %5.细菌绝对位置的获得 unit um

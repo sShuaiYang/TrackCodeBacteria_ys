@@ -29,18 +29,35 @@ disp('cell fluo intensity crosstalk correction')
 %     0,       0,       0,       0,       1];
 
 % F:\2022-10-13-IP33 多通道拍摄串光校正 ys\crosstalk 
-% 重新对GFP OFP RFP 3个通道拍摄的串光系数进行校正
+% 重新对GFP OFP RFP 3个通道拍摄的串光系数进行校正 细菌荧光测定
+% 细菌荧光测定 IP 33 滤光系统
+% 'Wheel-A','State',’1'
+% 'Wheel-B','State',’1'
 %FP GFP     YFP         OFP         RFP         IRFP
+% coeffMatrix = [...
+%     1,      2.83E-2,    0.146,       0,          0;...
+%     0.89,   1,          0.23,       0,          0;...
+%     6.50E-2,2.44E-2,    1,          0.156,      0;...
+%     1E-2,   0,          1E-1,       1,          0;...
+%     0,      0,          0,          0,          1];
+
+% F:\2022-10-17-IP33 2通道拍摄串光校正 ys
+% F:\2022-11-05-crosstalk -ys
+% 对IP33 2个通道拍摄 指GFPCyOFP 或者GFPRFP 拍摄选择的滤光片系统下的串光校正
+% 细菌荧光测定 IP 33 滤光系统
+% 'Wheel-A','State',’4'
+% 'Wheel-B','State',’3'
 coeffMatrix = [...
-    1,      2.83E-2,    0.146,      3.47E-3,    0;...
+    1,      2.83E-2,    0.065,      0,          0;...
     0.89,   1,          0.23,       0,          0;...
-    5.68E-2,2.44E-2,    1,          0.156,      0;...
-    5.72E-3,0,          6.71E-2,    1,          0;...
+    1.55E-2,2.44E-2,    1,          0.123,      0;...
+    1E-2,   0,          1.1E-1,       1,          0;...
     0,      0,          0,          0,          1];
 
 if isempty(bioInfo)
     return
 end
+
 %fluoChannels_c,allFluoName,allCorrectedFluoName需要对应 目前5个通道校正
 fluoChannels_c = {'sfGFP','Venus','CyOFP','mScarletI','TDsmURFP'};%无PVD，PVD暂不校正
 fluoName_c = {'intsfGFP','intVenus','intCyOFP',...
@@ -102,6 +119,9 @@ end
 [channelIdx,bioInfo] = findCorrectionChannel(bioInfo,correctedFluoName);
 imShotPara = imShotPara(channelIdx,:);
 channelNum = sum(channelIdx(:));
+% if channelNum <=3
+%     coeffMatrix = coeffMatrix1;
+% end
 channelTag = find(channelIdx);
 correctionMatrix = zeros (channelNum,channelNum);
 for iCh = 1: channelNum

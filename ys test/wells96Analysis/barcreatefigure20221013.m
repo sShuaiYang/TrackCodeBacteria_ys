@@ -8,7 +8,7 @@ color1 = [0 0.45 0.75];
 color2 = [0.85 0.33 0.10];
 
 % 创建 figure
-figure1 = figure('Position',[1019,474,1826,1034],'Units','pixels');
+figure1 = figure('Position',[565,556,1288,710],'Units','pixels');
 
 tiledlayout(2,1,'TileSpacing','tight');
 % 创建 axes
@@ -45,7 +45,7 @@ hold(ax,'off');
 % 设置其余坐标区属性
 set(ax,'Tickdir','out');
 set(ax,'FontSize',12,'XTick',[1:numel(xTickNames)],'XTickLabel',...
-    xTickNames);
+    xTickNames,'TickLabelInterpreter','none');
 % 创建 legend
 legend1 = legend(ax,'show');
 % set(legend1,...
@@ -88,7 +88,7 @@ hold(ax,'off');
 % 设置其余坐标区属性
 set(ax,'Tickdir','out');
 set(ax,'FontSize',12,'XTick',[1:numel(xTickNames)],'XTickLabel',...
-    xTickNames);
+    xTickNames,'TickLabelInterpreter','none');
 % 创建 legend
 legend1 = legend(ax,'show');
 % set(legend1,...

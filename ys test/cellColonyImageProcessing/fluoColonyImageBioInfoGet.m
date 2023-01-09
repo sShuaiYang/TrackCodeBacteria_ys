@@ -17,7 +17,7 @@ disp('bioInfo get for multifield (time-lapse) fluo image without tracking')
 fluoChannels={'sfGFP','mScarletI','Venus','PVD','CyOFP','TDsmURFP'};
 %PhC的BF图像一般用作mask,不再计算光强等信息
 fieldList = dir([dirFile,filesep,'field*']);
-fieldList = fieldListClean (fieldList);%只保留field的文件和两个系统文件
+% fieldList = fieldListClean (fieldList);%只保留field的文件和两个系统文件
 % allBioInfo = cell (1, length(fieldList));
 for iField = 1:length(fieldList)
     if strcmp(fieldList(iField).name(1:5),'field')

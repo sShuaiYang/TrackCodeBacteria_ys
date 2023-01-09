@@ -36,12 +36,6 @@ end
 %% 
 % delete wrong size region based on cell morphology
 [processedImages] = removeWrongMaskRegions_cellMorphology(processedImages);
-%%
-% if numel(im_sz) == 2
-%    figure;
-%    imshow(mergedImages) 
-% end
-% imshowlabel_ys(processedImages(:,:,end));
 end
 %%
 function [mergedImage] = showSegDataMergePhase(segFile)
